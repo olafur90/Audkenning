@@ -32,3 +32,4 @@ C:\Users\olafu\Documents\Matholl\Audkenning\bin\Debug\net8.0\Newtonsoft.Json.dll
 C:\Users\olafu\Documents\Matholl\Audkenning\bin\Debug\net8.0\RestSharp.dll
 C:\Users\olafu\Documents\Matholl\Audkenning\obj\Debug\net8.0\Audkenning.csproj.AssemblyReference.cache
 C:\Users\olafu\Documents\Matholl\Audkenning\obj\Debug\net8.0\Audkenning.csproj.Up2Date
+C:\Users\olafu\Documents\Matholl\Audkenning\obj\Debug\net8.0\Audkenning.sourcelink.json
