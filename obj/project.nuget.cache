@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "W8ZvPJvWcXQnNBXlWEZtpAyQKwevPaLvwRFoPIE7e7JWZRt+IDRbWsntmo5+m0I6ojYfHK59ShxIgC876uy9HA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\olafu\\Documents\\Matholl\\Audkenning\\Audkenning.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\olafu\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
+    "C:\\Users\\olafu\\.nuget\\packages\\restsharp\\112.0.0\\restsharp.112.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
