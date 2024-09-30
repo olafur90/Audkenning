@@ -21,23 +21,44 @@ namespace Audkenning.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly string _basePath = "https://tctgt.audkenni.is:443";
-        private readonly string _clientId = "rbApiTest";
-        private readonly string _outgoingMessage = "Hæhæ, hver ert þú?";
-        private readonly string _appTitle = "RB Auðkenning";
-        private readonly string _relatedParty = "Test";
-        private readonly string _useVchoice = "false";
-        private readonly string _useConfirmMessage = "false";
-        private readonly string _hashValue = "n/kRNhXaZ2jFKv8KlQX7ydgedXUmVy8b2O4xNq2ZxHteG7wOvCa0Kg3rY1JLOrOBXYQm+z2FRVwIv47w8gUb5g==";
-        private readonly string _authenticationChoice = "2"; // 0 = sim, 1 = card, 2 = app
+        private readonly string _basePath;
+        private readonly string _clientId;
+        private readonly string _outgoingMessage;
+        private readonly string _appTitle;
+        private readonly string _relatedParty;
+        private readonly string _useVchoice;
+        private readonly string _useConfirmMessage;
+        private readonly string _hashValue;
+        private readonly string _authenticationChoice; // 0 = sim, 1 = card, 2 = app
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="logger"></param>
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IConfiguration configuration)
         {
             _logger = logger;
+            _basePath = Environment.GetEnvironmentVariable("BASE_PATH")!;
+            _clientId = Environment.GetEnvironmentVariable("CLIENT_ID")!;
+            _outgoingMessage = Environment.GetEnvironmentVariable("OUTGOING_MESSAGE")!;
+            _appTitle = Environment.GetEnvironmentVariable("APP_TITLE")!;
+            _relatedParty = Environment.GetEnvironmentVariable("RELATED_PARTY")!;
+            _useVchoice = Environment.GetEnvironmentVariable("USE_VCHOICE")!;
+            _useConfirmMessage = Environment.GetEnvironmentVariable("USE_CONFIRM_MESSAGE")!;
+            _hashValue = Environment.GetEnvironmentVariable("HASH_VALUE")!;
+            _authenticationChoice = Environment.GetEnvironmentVariable("AUTHENTICATION_CHOICE")!;
+
+            Console.WriteLine(
+                $"basePath: {_basePath}, \n" +
+                $"clientId: {_clientId}, \n" +
+                $"outgoingMessage: {_outgoingMessage}, \n" +
+                $"appTitle: {_appTitle}, \n" +
+                $"relatedParty: {_relatedParty}, \n" +
+                $"useVchoice: {_useVchoice}, \n" +
+                $"useConfirmMessage: {_useConfirmMessage}, \n" +
+                $"hashValue: {_hashValue}, \n" +
+                $"authenticationChoice: {_authenticationChoice}"
+            );
         }
 
         /// <summary>
@@ -63,7 +84,7 @@ namespace Audkenning.Controllers
         }
 
         /// <summary>
-        /// Starts the authenticating process by calling Auðkenni to get the callbacks needed
+        /// Starts the authenticating process by calling Auðkenni to get the authId and 
         /// </summary>
         /// <returns>A GetCallbacksDto object</returns>
         private async Task<GetCallbacksDto?> GetCallbacksAsync()
@@ -96,7 +117,6 @@ namespace Audkenning.Controllers
 
             try
             {
-                // TODO: Add env variables and get phone number/social security number from user
                 apiResponse.Callbacks[0].Input[0].Value = _clientId;
                 apiResponse.Callbacks[1].Input[0].Value = _relatedParty;
                 apiResponse.Callbacks[2].Input[0].Value = _appTitle;
@@ -123,7 +143,6 @@ namespace Audkenning.Controllers
 
                 string jsonResponse = response.Content;
 
-                // TODO: Rename variable and DTO object
                 GetCallbackDto2 apiResponse2 = JsonConvert.DeserializeObject<GetCallbackDto2>(jsonResponse);
 
                 string updatedJson = JsonConvert.SerializeObject(apiResponse2);
@@ -193,7 +212,7 @@ namespace Audkenning.Controllers
             return BadRequest();
         }
 
-        // Step 4
+        // Step 4 - Do we need this?
         /// <summary>
         /// 
         /// </summary>
@@ -221,7 +240,7 @@ namespace Audkenning.Controllers
             return Ok();
         }
 
-        // Step 5
+        // Step 5 - Same as Step 4, do we need this?
         private async Task<IActionResult> GetAccessAndIdToken()
         {
             return Ok();
