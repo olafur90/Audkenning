@@ -1,11 +1,19 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+﻿////----------------------------------------------------------------------------////
+////
+////                        Reiknistofa Bankanna - Auðkenning
+////                                CallbacksDto.cs
+////
+////----------------------------------------------------------------------------////
+
+using Newtonsoft.Json;
 using System.Text;
 
 namespace Audkenning.Dtos
 {
-    public class GetCallbacksDto
+    /// <summary>
+    /// The callback dto that is sent from the server
+    /// </summary>
+    public class CallbacksDto
     {
         [JsonProperty("authId")]
         public string AuthId { get; set; }
@@ -26,6 +34,9 @@ namespace Audkenning.Dtos
         }
     }
 
+    /// <summary>
+    /// The shorter version of callbacks - Will rename later
+    /// </summary>
     public class GetCallbackDto2
     {
         [JsonProperty("authId")]
@@ -47,6 +58,9 @@ namespace Audkenning.Dtos
         }
     }
 
+    /// <summary>
+    /// Contains the shorter version of callbacks - Will rename later
+    /// </summary>
     public class Callback2
     {
         [JsonProperty("type")]
@@ -69,6 +83,9 @@ namespace Audkenning.Dtos
         }
     }
 
+    /// <summary>
+    /// Contains the callbacks
+    /// </summary>
     public class Callback
     {
         [JsonProperty("type")]
@@ -107,6 +124,9 @@ namespace Audkenning.Dtos
         }
     }
 
+    /// <summary>
+    /// Contains the name and value of an output
+    /// </summary>
     public class Output
     {
         [JsonProperty("name")]
@@ -121,6 +141,9 @@ namespace Audkenning.Dtos
         }
     }
 
+    /// <summary>
+    /// Contains the name and value of an input
+    /// </summary>
     public class Input
     {
         [JsonProperty("name")]
