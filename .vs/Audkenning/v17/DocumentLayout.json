@@ -11,16 +11,20 @@
       "RelativeMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|solutionrelative:.env||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|c:\\users\\notandi\\onedrive\\audkenning\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|c:\\users\\notandi\\onedrive\\audkenning\\audkennidbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|solutionrelative:audkennidbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|c:\\users\\notandi\\onedrive\\audkenning\\dtos\\callbacksdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|solutionrelative:dtos\\callbacksdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|c:\\users\\notandi\\onedrive\\audkenning\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|c:\\users\\notandi\\onedrive\\audkenning\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,8 +34,21 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 3,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AudkenniDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\Notandi\\OneDrive\\Audkenning\\AudkenniDbContext.cs",
+              "RelativeDocumentMoniker": "AudkenniDbContext.cs",
+              "ToolTip": "C:\\Users\\Notandi\\OneDrive\\Audkenning\\AudkenniDbContext.cs",
+              "RelativeToolTip": "AudkenniDbContext.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-02T20:24:18.026Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 1,
@@ -47,13 +64,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\Notandi\\OneDrive\\Audkenning\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",
               "ToolTip": "C:\\Users\\Notandi\\OneDrive\\Audkenning\\appsettings.json",
               "RelativeToolTip": "appsettings.json",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAVAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAYAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
               "WhenOpened": "2024-09-29T00:48:18.518Z"
             },
@@ -65,35 +82,36 @@
               "RelativeDocumentMoniker": "Controllers\\HomeController.cs",
               "ToolTip": "C:\\Users\\Notandi\\OneDrive\\Audkenning\\Controllers\\HomeController.cs",
               "RelativeToolTip": "Controllers\\HomeController.cs",
-              "ViewState": "AQIAAB4AAAAAAAAAAAAAAC4AAABRAAAA",
+              "ViewState": "AQIAABEBAAAAAAAAAAAgwBQBAAAgAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-09-28T03:09:58.605Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "CallbacksDto.cs",
               "DocumentMoniker": "C:\\Users\\Notandi\\OneDrive\\Audkenning\\Dtos\\CallbacksDto.cs",
               "RelativeDocumentMoniker": "Dtos\\CallbacksDto.cs",
               "ToolTip": "C:\\Users\\Notandi\\OneDrive\\Audkenning\\Dtos\\CallbacksDto.cs",
               "RelativeToolTip": "Dtos\\CallbacksDto.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAAqAAAA",
+              "ViewState": "AQIAACAAAAAAAAAAAAAwwBIAAAAqAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-09-28T02:58:34.147Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 2,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Notandi\\OneDrive\\Audkenning\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "C:\\Users\\Notandi\\OneDrive\\Audkenning\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAALAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAALAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-28T02:52:36.136Z"
+              "WhenOpened": "2024-09-28T02:52:36.136Z",
+              "EditorCaption": ""
             }
           ]
         }
