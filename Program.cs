@@ -8,6 +8,7 @@ Env.Load();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddCors();
 
 // Register IConfiguration so it can be injected
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
@@ -31,7 +32,7 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000"));
 app.UseAuthorization();
 
 app.MapControllerRoute(

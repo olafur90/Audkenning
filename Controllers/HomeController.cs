@@ -13,6 +13,7 @@ using System.Diagnostics;
 using Audkenning.Dtos;
 using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.Options;
+using Audkenning.Utils;
 
 namespace Audkenning.Controllers
 {
@@ -31,6 +32,7 @@ namespace Audkenning.Controllers
         private readonly string _relatedParty;
         private readonly string _useVchoice;
         private readonly string _useConfirmMessage;
+        private readonly string _generatedRandomString;
         private readonly string _hashValue;
         private readonly string _authenticationChoice;
 
@@ -46,6 +48,8 @@ namespace Audkenning.Controllers
             this._context = _context;
             this._logger = logger;
 
+            _generatedRandomString = HashUtil.GenerateRandomString(15);
+
             _basePath = Environment.GetEnvironmentVariable("BASE_PATH")!;
             _clientId = Environment.GetEnvironmentVariable("CLIENT_ID")!;
             _outgoingMessage = Environment.GetEnvironmentVariable("OUTGOING_MESSAGE")!;
@@ -53,7 +57,7 @@ namespace Audkenning.Controllers
             _relatedParty = Environment.GetEnvironmentVariable("RELATED_PARTY")!;
             _useVchoice = Environment.GetEnvironmentVariable("USE_VCHOICE")!;
             _useConfirmMessage = Environment.GetEnvironmentVariable("USE_CONFIRM_MESSAGE")!;
-            _hashValue = Environment.GetEnvironmentVariable("HASH_VALUE")!;
+            _hashValue = HashUtil.GenerateSHA512Hash(_generatedRandomString);
             _authenticationChoice = Environment.GetEnvironmentVariable("AUTHENTICATION_CHOICE")!;
 
             Console.WriteLine(
@@ -108,7 +112,12 @@ namespace Audkenning.Controllers
         /// <returns>A GetCallbacksDto object</returns>
         private async Task<CallbacksDto?> GetAuthIdAndCallbacksAsync()
         {
-            var client = new RestClient(_basePath);
+            var options = new RestClientOptions(_basePath)
+            {
+                MaxTimeout = -1,
+                FollowRedirects = false
+            };
+            var client = new RestClient(options);
             var request = new RestRequest("/sso/json/realms/root/realms/audkenni/authenticate?authIndexType=service&authIndexValue=api_v202");
 
             request.AddHeader("Content-Type", "application/json");
@@ -139,7 +148,12 @@ namespace Audkenning.Controllers
         /// <returns>A result of Ok if successful, and unauthorized if not.</returns>
         private async Task<IActionResult> ReturnCallbacksAsync(CallbacksDto apiResponse, string userIdentifier)
         {
-            var client = new RestClient(_basePath);
+            var options = new RestClientOptions(_basePath)
+            {
+                MaxTimeout = -1,
+                FollowRedirects = false
+            };
+            var client = new RestClient(options);
             var request = new RestRequest("/sso/json/realms/root/realms/audkenni/authenticate?authIndexType=service&authIndexValue=api_v202");
 
             try
@@ -193,7 +207,12 @@ namespace Audkenning.Controllers
         /// <returns>A result of Ok if successful, and unauthorized if not.</returns>
         private async Task<IActionResult> RunPollCallAsync(string updatedJson, string userIdentifier)
         {
-            var client = new RestClient(_basePath);
+            var options = new RestClientOptions(_basePath)
+            {
+                MaxTimeout = -1,
+                FollowRedirects = false
+            };
+            var client = new RestClient(options);
             var request = new RestRequest("/sso/json/realms/root/realms/audkenni/authenticate");
 
             request.AddHeader("Content-Type", "application/json");
@@ -206,6 +225,10 @@ namespace Audkenning.Controllers
             int refreshRate = 2000; // 2 sec
             int maxAttempts = (int) seconds / (refreshRate / 1000);
 
+
+            int x = HashUtil.CalculateVerificationCode(_hashValue);
+            _logger.LogCritical($"Verification code: {x}"); // Log critical
+
             while (attempts < maxAttempts)
             {
                 try
@@ -217,6 +240,7 @@ namespace Audkenning.Controllers
                     if (content == null) return NoContent();
 
                     var jsonResponse = JObject.Parse(content);
+                    _logger.LogInformation(jsonResponse.ToString()); // Log inform
 
                     // Check for 'successUrl' and 'tokenId' - These should be present if success
                     if (jsonResponse["successUrl"] != null && jsonResponse["tokenId"] != null)
@@ -228,9 +252,6 @@ namespace Audkenning.Controllers
                         
                         // TODO: Uncomment next line for next step of the process if we need to go that far.
                         await GetAuthenticationCode(tokenId);
-                        
-                        // To fake database, remove later.
-                        _recentAuthentications.Add(userIdentifier);
 
                         // Create new Authorization record in the database context and add to it
                         var newAuthentication = new Authentications
@@ -285,10 +306,10 @@ namespace Audkenning.Controllers
         /// <returns></returns>
         private async Task<IActionResult> GetAuthenticationCode(string tokenId)
         {
-            var options = new RestClientOptions("https://tctgt.audkenni.is")
+            var options = new RestClientOptions(_basePath)
             {
                 MaxTimeout = -1,
-                FollowRedirects = false
+                FollowRedirects = true
             };
             var client = new RestClient(options);
             var request = new RestRequest(":443/sso/oauth2/realms/root/realms/audkenni/authorize?service=api_v202&client_id=rbApiTest&response_type=code&scope=openid profile signature&code_challenge=5WnuXW4ALVNtX9G6MydkrPs-F2suz0TQkoaKBsk8Hzk&code_challenge_method=S256&state=abc123&redirect_uri=http://localhost:3000/callback", Method.Get);
