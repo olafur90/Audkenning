@@ -1,10 +1,3 @@
-////----------------------------------------------------------------------------////
-////
-////                        Reiknistofa Bankanna - Auðkenning
-////                               HomeController.cs
-////
-////----------------------------------------------------------------------------////
-
 using Audkenning.Models;
 using Microsoft.AspNetCore.Mvc;
 using RestSharp;
@@ -12,7 +5,6 @@ using Newtonsoft.Json;
 using System.Diagnostics;
 using Audkenning.Dtos;
 using Newtonsoft.Json.Linq;
-using Microsoft.Extensions.Options;
 using Audkenning.Utils;
 
 namespace Audkenning.Controllers
@@ -43,6 +35,7 @@ namespace Audkenning.Controllers
         /// Constructor
         /// </summary>
         /// <param name="logger"></param>
+        /// <param name="_context"></param>
         public HomeController(ILogger<HomeController> logger, AudkenniDbContext _context)
         {
             this._context = _context;
@@ -59,37 +52,25 @@ namespace Audkenning.Controllers
             _useConfirmMessage = Environment.GetEnvironmentVariable("USE_CONFIRM_MESSAGE")!;
             _hashValue = HashUtil.GenerateSHA512Hash(_generatedRandomString);
             _authenticationChoice = Environment.GetEnvironmentVariable("AUTHENTICATION_CHOICE")!;
-
-            Console.WriteLine(
-                $"basePath: {_basePath}, \n" +
-                $"clientId: {_clientId}, \n" +
-                $"outgoingMessage: {_outgoingMessage}, \n" +
-                $"appTitle: {_appTitle}, \n" +
-                $"relatedParty: {_relatedParty}, \n" +
-                $"useVchoice: {_useVchoice}, \n" +
-                $"useConfirmMessage: {_useConfirmMessage}, \n" +
-                $"hashValue: {_hashValue}, \n" +
-                $"authenticationChoice: {_authenticationChoice}"
-            );
         }
 
         /// <summary>
         /// REST endpoint to Authenticate a user
         /// </summary>
-        /// <param name="userIdentifier">The SSN/Phone number of the person that is being authenticated.</param>
+        /// <param name="userId">The SSN/Phone number of the person that is being authenticated.</param>
         /// <returns>An Ok status if successful, and Unauthorized if not.</returns>
         [HttpPost]
-        public async Task<IActionResult> AuthenticateUser([FromQuery] string userIdentifier)
+        public async Task<IActionResult> AuthenticateUser([FromQuery] string userId)
         {
             // TODO: Sanitize the input and check if it is a valid SSN/Phone number
-            // TODO Continued: Allow dash and space (xxxxxx-xxxx, xxx-xxxx, xxx - xxxx, xxxxxx - xxxx)? Maybe do that on frontend?
+            // TODO: Continued: Allow dash and space (xxxxxx-xxxx, xxx-xxxx, xxx - xxxx, xxxxxx - xxxx)? Maybe do that on frontend?
             try
             {
                 var apiResponse = await GetAuthIdAndCallbacksAsync();
 
                 if (apiResponse == null) return NotFound();
             
-                return await ReturnCallbacksAsync(apiResponse, userIdentifier);
+                return await ReturnCallbacksAsync(apiResponse, userId);
             }
             catch
             {
@@ -106,11 +87,7 @@ namespace Audkenning.Controllers
             return "";
         }
 
-        /// <summary>
-        /// Starts the authenticating process by calling Auðkenni to get the authId and 
-        /// </summary>
-        /// <returns>A GetCallbacksDto object</returns>
-        private async Task<CallbacksDto?> GetAuthIdAndCallbacksAsync()
+        private RestClient restClient()
         {
             var options = new RestClientOptions(_basePath)
             {
@@ -118,6 +95,16 @@ namespace Audkenning.Controllers
                 FollowRedirects = false
             };
             var client = new RestClient(options);
+            return client;
+        }
+
+        /// <summary>
+        /// Starts the authenticating process by calling Auðkenni to get the authId and 
+        /// </summary>
+        /// <returns>A GetCallbacksDto object</returns>
+        private async Task<CallbacksDto?> GetAuthIdAndCallbacksAsync()
+        {
+            var client = restClient();
             var request = new RestRequest("/sso/json/realms/root/realms/audkenni/authenticate?authIndexType=service&authIndexValue=api_v202");
 
             request.AddHeader("Content-Type", "application/json");
@@ -144,9 +131,9 @@ namespace Audkenning.Controllers
         /// Answers the callback from the previous call and fills in the required information such as our clientId
         /// </summary>
         /// <param name="apiResponse">The response we got from our previous call</param>
-        /// <param name="socialSecurityNumber">The social security number of the person being authenticated</param>
+        /// <param name="userId">The social security number of the person being authenticated</param>
         /// <returns>A result of Ok if successful, and unauthorized if not.</returns>
-        private async Task<IActionResult> ReturnCallbacksAsync(CallbacksDto apiResponse, string userIdentifier)
+        private async Task<IActionResult> ReturnCallbacksAsync(CallbacksDto apiResponse, string userId)
         {
             var options = new RestClientOptions(_basePath)
             {
@@ -161,7 +148,7 @@ namespace Audkenning.Controllers
                 apiResponse.Callbacks[0].Input[0].Value = _clientId;
                 apiResponse.Callbacks[1].Input[0].Value = _relatedParty;
                 apiResponse.Callbacks[2].Input[0].Value = _appTitle;
-                apiResponse.Callbacks[3].Input[0].Value = userIdentifier;
+                apiResponse.Callbacks[3].Input[0].Value = userId;
                 apiResponse.Callbacks[4].Input[0].Value = _outgoingMessage;
                 apiResponse.Callbacks[5].Input[0].Value = _useVchoice;
                 apiResponse.Callbacks[6].Input[0].Value = _useConfirmMessage;
@@ -189,23 +176,23 @@ namespace Audkenning.Controllers
 
                 string updatedJson = JsonConvert.SerializeObject(apiResponse2);
 
-                return await RunPollCallAsync(updatedJson, userIdentifier);
+                return await RunPollCallAsync(updatedJson, userId);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error when calling Auðkenni with user identifier {userIdentifier}\n", ex.ToString());
+                _logger.LogError($"Error when calling Auðkenni with user identifier {userId}\n", ex.ToString());
                 return BadRequest();
             }
         }
 
-        // Step 3 - Polling
+        // Step 3 - Polling (waiting for user response)
         /// <summary>
         /// Polls the user on their app/sim and waits for them to successfully confirm on their device.
         /// </summary>
         /// <param name="updatedJson">The response from our previous call to answering the callbacks.</param>
-        /// <param name="userIdentifier">The SSN/Phone of the user that is being identified.</param>
+        /// <param name="userId">The SSN/Phone of the user that is being identified.</param>
         /// <returns>A result of Ok if successful, and unauthorized if not.</returns>
-        private async Task<IActionResult> RunPollCallAsync(string updatedJson, string userIdentifier)
+        private async Task<IActionResult> RunPollCallAsync(string updatedJson, string userId)
         {
             var options = new RestClientOptions(_basePath)
             {
@@ -220,20 +207,20 @@ namespace Audkenning.Controllers
             request.AddHeader("Cookie", "audssossolb=03; audsso=UgT8UelNnFKc-Wm0GvQzDpwu0Ag.*AAJTSQACMDIAAlNLABwxQ1M5QVVlTFFxaXVCZWFTMkxXajhHV2JMWTg9AAR0eXBlAANDVFMAAlMxAAIwMw..*");
             request.AddParameter("application/json", updatedJson, ParameterType.RequestBody);
 
-            int attempts = 0; // Number of attempts so far
+            int attempt = 0; // Number of attempts so far
             int seconds = 40;
             int refreshRate = 2000; // 2 sec
             int maxAttempts = (int) seconds / (refreshRate / 1000);
 
-
+            // FIXME: This is not working right atm
             int x = HashUtil.CalculateVerificationCode(_hashValue);
             _logger.LogCritical($"Verification code: {x}"); // Log critical
 
-            while (attempts < maxAttempts)
+            while (attempt < maxAttempts)
             {
                 try
                 {
-                    _logger.LogInformation($"Attempt nr: {attempts}");
+                    _logger.LogInformation($"Attempt nr: {attempt}");
                     var response = await client.PostAsync(request);
                     var content = response.Content;
 
@@ -246,55 +233,38 @@ namespace Audkenning.Controllers
                     if (jsonResponse["successUrl"] != null && jsonResponse["tokenId"] != null)
                     {
                         var successString = JsonConvert.SerializeObject(jsonResponse);
+                        
                         string tokenId = jsonResponse["tokenId"].ToString();
                         
-                        _logger.LogWarning($"User {userIdentifier} authenticated successfully.");
+                        _logger.LogWarning($"User {userId} authenticated successfully.");
                         
-                        // TODO: Uncomment next line for next step of the process if we need to go that far.
+                        // TODO: See if we want to go to step 4, remove next line if not needed
                         await GetAuthenticationCode(tokenId);
 
-                        // Create new Authorization record in the database context and add to it
-                        var newAuthentication = new Authentications
-                        {
-                            Name = userIdentifier,
-                            IsAuthenticated = true
-                        };
-                        _context.Authentication.Add(newAuthentication);
-
-                        await _context.SaveChangesAsync();
+                        // Add a new record of a successful authentication to the database
+                        AddAuthRecordToDatabase(userId, true);
 
                         return Ok();
                     }
 
                     // Periodically check if user has confirmed on their end.
                     await Task.Delay(refreshRate);
-                    attempts++;
+                    attempt++;
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning($"User {userIdentifier} cancelled.\n {ex}");
-                    var newAuthentication = new Authentications
-                    {
-                        Name = userIdentifier,
-                        IsAuthenticated = false
-                    };
-                    _context.Authentication.Add(newAuthentication);
+                    _logger.LogWarning($"User {userId} cancelled.\n {ex}");
 
-                    await _context.SaveChangesAsync();
+                    // Add new record of a failed authentication to the database
+                    AddAuthRecordToDatabase(userId, false);
                     return Unauthorized();
                 }
             }
 
-            var authFailed = new Authentications
-            {
-                Name = userIdentifier,
-                IsAuthenticated = false
-            };
-            _context.Authentication.Add(authFailed);
-
-            await _context.SaveChangesAsync();
-
+            // Add new record of a failed authentication to the database - If we get to this code, it failed because of timeout
+            AddAuthRecordToDatabase(userId, false);
             _logger.LogError("Poll timed out while waiting for user.");
+
             return BadRequest();
         }
 
@@ -318,23 +288,14 @@ namespace Audkenning.Controllers
             {
                 RestResponse response = await client.ExecuteAsync(request);
 
-                var locationHeader = response.Headers.FirstOrDefault(h => h.Name == "Location");
-                if (locationHeader != null)
+                if (response.Content != null)
                 {
-                    _logger.LogInformation($"Location: {locationHeader.Value}");
+                    //var x = await GetAccessAndIdToken(location);
                 }
                 else
                 {
-                    _logger.LogInformation("Location header not found.");
+                    return NoContent();
                 }
-
-                if (response.Content != null)
-                {
-                    Console.WriteLine("Here!");
-                    //await GetAccessAndIdToken(eTag);
-                }
-
-                if (response.Content == null) { return NoContent(); }
             }
             catch (Exception ex)
             {
@@ -345,7 +306,7 @@ namespace Audkenning.Controllers
         }
 
         // Step 5 - Same as Step 4, do we need this?
-        private async Task<IActionResult> GetAccessAndIdToken(string ETag)
+        private async Task<IActionResult> GetAccessAndIdToken(string location)
         {
             var client = new RestClient(_basePath);
             var request = new RestRequest("/sso/oauth2/realms/root/realms/audkenni/access_token");
@@ -360,25 +321,19 @@ namespace Audkenning.Controllers
             request.AddParameter("client_secret", "eNJi1oo0wxA1");
 
             var response = await client.PostAsync(request);
-            _logger.LogCritical (response.Content);
-
-            if (response.IsSuccessful)
-            {
-                _logger.LogInformation(response.Content);
-                _logger.LogInformation("Response Headers");
-                foreach (var item in response.Headers)
-                {
-                    _logger.LogInformation($"{item.Name}: {item.Value}"); // TODO: Investigate this sect
-                }
-            }
-            else
-            {
-            {
-                _logger.LogError(response.ErrorMessage);
-            }
-            }
 
             return Ok();
+        }
+
+        private async void AddAuthRecordToDatabase(string userIdentifier, bool success)
+        {
+            var authFailed = new Authentications
+            {
+                Name = userIdentifier,
+                IsAuthenticated = success
+            };
+            _context.Authentication.Add(authFailed);
+            await _context.SaveChangesAsync();
         }
 
         public IActionResult Index()
