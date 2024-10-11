@@ -13,10 +13,11 @@ builder.Services.AddCors();
 // Register IConfiguration so it can be injected
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 
+/*
 builder.Services.AddDbContext<AudkenniDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
+});*/
 
 var app = builder.Build();
 

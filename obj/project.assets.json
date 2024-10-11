@@ -8463,24 +8463,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Notandi\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\rb870\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Notandi\\OneDrive\\Audkenning\\Audkenning.csproj",
+      "projectUniqueName": "C:\\dev\\Audkenning_Dotnet\\Audkenning\\Audkenning.csproj",
       "projectName": "Audkenning",
-      "projectPath": "C:\\Users\\Notandi\\OneDrive\\Audkenning\\Audkenning.csproj",
-      "packagesPath": "C:\\Users\\Notandi\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Notandi\\OneDrive\\Audkenning\\obj\\",
+      "projectPath": "C:\\dev\\Audkenning_Dotnet\\Audkenning\\Audkenning.csproj",
+      "packagesPath": "C:\\Users\\rb870\\.nuget\\packages\\",
+      "outputPath": "C:\\dev\\Audkenning_Dotnet\\Audkenning\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\Notandi\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\rb870\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -8558,7 +8553,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.304/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

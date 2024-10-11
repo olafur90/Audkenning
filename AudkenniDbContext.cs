@@ -2,6 +2,7 @@
 
 namespace Audkenning
 {
+    /*
     public class AudkenniDbContext(DbContextOptions<AudkenniDbContext> options) : DbContext(options)
     {
 
@@ -14,5 +15,5 @@ namespace Audkenning
         public int Id { get; set; }
         public string Name { get; set; }
         public bool IsAuthenticated { get; set; }
-    }
+    }*/
 }
