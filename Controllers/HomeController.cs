@@ -17,6 +17,7 @@ using Audkenning.Utils;
 using System.Web;
 using Azure.Core;
 using Azure;
+using Microsoft.EntityFrameworkCore;
 
 namespace Audkenning.Controllers
 {
@@ -26,7 +27,6 @@ namespace Audkenning.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IConfiguration _configuration;
         //private readonly AudkenniDbContext _context;
 
         private readonly string _basePath;
@@ -39,7 +39,8 @@ namespace Audkenning.Controllers
         private readonly string _generatedRandomString;
         private readonly string _hashValue;
         private readonly string _authenticationChoice;
-
+        private readonly AudkenniDbContext _context;
+        private readonly DbHelper _dbHelper;
         private string nameToReturn;
 
         // Fake data for testing - TODO: Remove after testing is done
@@ -49,10 +50,11 @@ namespace Audkenning.Controllers
         /// Constructor
         /// </summary>
         /// <param name="logger"></param>
-        public HomeController(ILogger<HomeController> logger, CancellationToken cancellationToken = default /*,AudkenniDbContext _context*/)
+        public HomeController(ILogger<HomeController> logger, DbHelper dbHelper, AudkenniDbContext context, CancellationToken cancellationToken = default)
         {
-            //this._context = _context;
             this._logger = logger;
+            this._context = context;
+            this._dbHelper = dbHelper;
 
             _generatedRandomString = HashUtil.GenerateRandomString(15);
 
@@ -91,14 +93,10 @@ namespace Audkenning.Controllers
             }
         }
 
-        // TODO: Replace with actual database logic if we're going with that
-        // Fetch recent tries to authenticate from mock database
-        [HttpGet("recentAuthentications", Name = "RecentAuthentications")]
-        public async Task<string> GetRecentAuthentications()
+        [HttpGet]
+        public async Task<List<Authentication>> GetRecentAuthentications()
         {
-            await Task.Delay(50); // TODO: Remove, simulating DB delay
-            if (_recentAuthentications.Count > 0) return JsonConvert.SerializeObject(_recentAuthentications);
-            return "";
+            return await _dbHelper.GetRecentAuthenticationsAsync();
         }
 
         /// <summary>
@@ -243,20 +241,7 @@ namespace Audkenning.Controllers
                         
                         _logger.LogWarning($"User {userIdentifier} authenticated successfully.");
                         
-                        // TODO: Uncomment next line for next step of the process if we need to go that far.
                         return await GetAuthenticationCode(tokenId);
-
-                        // Create new Authorization record in the database context and add to it
-                        /*
-                        var newAuthentication = new Authentications
-                        {
-                            Name = userIdentifier,
-                            IsAuthenticated = true
-                        };
-                        _context.Authentication.Add(newAuthentication);
-
-                        await _context.SaveChangesAsync();
-                        */
                     }
 
                     // Periodically check if user has confirmed on their end.
@@ -265,32 +250,13 @@ namespace Audkenning.Controllers
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning($"User {userIdentifier} cancelled.\n {ex}");
-                    /*
-                    var newAuthentication = new Authentications
-                    {
-                        Name = userIdentifier,
-                        IsAuthenticated = false
-                    };
-                    _context.Authentication.Add(newAuthentication);
-
-                    await _context.SaveChangesAsync(); */
+                    await _dbHelper.AddAuthenticationAsync(userIdentifier, false);
                     return Unauthorized();
                 }
             }
 
-            /*
-            var authFailed = new Authentications
-            {
-                Name = userIdentifier,
-                IsAuthenticated = false
-            };
-            _context.Authentication.Add(authFailed);
-
-            await _context.SaveChangesAsync();
-            */
-
             _logger.LogError("Poll timed out while waiting for user.");
+            await _dbHelper.AddAuthenticationAsync(userIdentifier, false);
             return BadRequest();
         }
 
@@ -391,7 +357,9 @@ namespace Audkenning.Controllers
 
             var response = await client.PostAsync(request);
             var jsonResponse = JObject.Parse(response.Content);
-            var name = jsonResponse["name"];
+            var name = jsonResponse["name"]!;
+
+            await _dbHelper.AddAuthenticationAsync(name.ToString(), true);
 
             _logger.LogCritical($"\nVelkomin/n {name}");
             return Ok(name.ToString());

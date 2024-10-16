@@ -7,24 +7,32 @@
       "RelativeMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|solutionrelative:controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|c:\\dev\\audkenning_dotnet\\audkenning\\.env||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|solutionrelative:.env||{8B382828-6202-11D1-8870-0000F87579D2}"
+      "AbsoluteMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|c:\\dev\\audkenning_dotnet\\audkenning\\utils\\dbhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|solutionrelative:utils\\dbhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|c:\\dev\\audkenning_dotnet\\audkenning\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|c:\\dev\\audkenning_dotnet\\audkenning\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|c:\\dev\\audkenning_dotnet\\audkenning\\utils\\hashutil.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|solutionrelative:utils\\hashutil.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|c:\\dev\\audkenning_dotnet\\audkenning\\audkennidbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|solutionrelative:audkennidbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|c:\\dev\\audkenning_dotnet\\audkenning\\dtos\\callbacksdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|solutionrelative:dtos\\callbacksdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|c:\\dev\\audkenning_dotnet\\audkenning\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|c:\\dev\\audkenning_dotnet\\audkenning\\.env||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|solutionrelative:.env||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|c:\\dev\\audkenning_dotnet\\audkenning\\utils\\hashutil.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0992E2C6-0F1C-40D9-91DE-220F3F6A8F68}|Audkenning.csproj|solutionrelative:utils\\hashutil.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,11 +42,35 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 1,
+              "Title": "DbHelper.cs",
+              "DocumentMoniker": "C:\\dev\\Audkenning_Dotnet\\Audkenning\\Utils\\DbHelper.cs",
+              "RelativeDocumentMoniker": "Utils\\DbHelper.cs",
+              "ToolTip": "C:\\dev\\Audkenning_Dotnet\\Audkenning\\Utils\\DbHelper.cs",
+              "RelativeToolTip": "Utils\\DbHelper.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4AAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-13T23:05:31.782Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AudkenniDbContext.cs",
+              "DocumentMoniker": "C:\\dev\\Audkenning_Dotnet\\Audkenning\\AudkenniDbContext.cs",
+              "RelativeDocumentMoniker": "AudkenniDbContext.cs",
+              "ToolTip": "C:\\dev\\Audkenning_Dotnet\\Audkenning\\AudkenniDbContext.cs",
+              "RelativeToolTip": "AudkenniDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-13T21:45:01.031Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "HashUtil.cs",
               "DocumentMoniker": "C:\\dev\\Audkenning_Dotnet\\Audkenning\\Utils\\HashUtil.cs",
               "RelativeDocumentMoniker": "Utils\\HashUtil.cs",
@@ -46,12 +78,11 @@
               "RelativeToolTip": "Utils\\HashUtil.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAACEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-04T22:25:56.593Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-04T22:25:56.593Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 6,
               "Title": ".env",
               "DocumentMoniker": "C:\\dev\\Audkenning_Dotnet\\Audkenning\\.env",
               "RelativeDocumentMoniker": ".env",
@@ -59,8 +90,7 @@
               "RelativeToolTip": ".env",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAALAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2024-09-30T10:58:48.499Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-30T10:58:48.499Z"
             },
             {
               "$type": "Document",
@@ -70,20 +100,20 @@
               "RelativeDocumentMoniker": "Controllers\\HomeController.cs",
               "ToolTip": "C:\\dev\\Audkenning_Dotnet\\Audkenning\\Controllers\\HomeController.cs",
               "RelativeToolTip": "Controllers\\HomeController.cs",
-              "ViewState": "AgIAAHgBAAAAAAAAAAAQwIEBAAAMAAAAAAAAAA==",
+              "ViewState": "AgIAAMcAAAAAAAAAAAA0wCMAAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-09-28T03:09:58.605Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 4,
               "Title": "CallbacksDto.cs",
               "DocumentMoniker": "C:\\dev\\Audkenning_Dotnet\\Audkenning\\Dtos\\CallbacksDto.cs",
               "RelativeDocumentMoniker": "Dtos\\CallbacksDto.cs",
               "ToolTip": "C:\\dev\\Audkenning_Dotnet\\Audkenning\\Dtos\\CallbacksDto.cs",
               "RelativeToolTip": "Dtos\\CallbacksDto.cs",
-              "ViewState": "AQIAACAAAAAAAAAAAAAwwBIAAAAqAAAA",
+              "ViewState": "AgIAACAAAAAAAAAAAAAwwBIAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-09-28T02:58:34.147Z"
             },
@@ -95,14 +125,13 @@
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "C:\\dev\\Audkenning_Dotnet\\Audkenning\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-28T02:52:36.136Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-28T02:52:36.136Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\dev\\Audkenning_Dotnet\\Audkenning\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",
@@ -110,8 +139,7 @@
               "RelativeToolTip": "appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-09-29T00:48:18.518Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-29T00:48:18.518Z"
             }
           ]
         }
