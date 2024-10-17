@@ -19,7 +19,7 @@ builder.Services.AddDbContext<AudkenniDbContext>(options =>
 });
 
 // Register DatabaseHelper for DI
-builder.Services.AddScoped<DbHelper>(); // Add this line
+builder.Services.AddScoped<DbHelper>();
 
 var app = builder.Build();
 

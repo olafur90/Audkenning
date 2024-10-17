@@ -142,7 +142,6 @@ namespace Audkenning.Controllers
         {
             var options = new RestClientOptions(_basePath)
             {
-                MaxTimeout = -1,
                 FollowRedirects = false
             };
             var client = new RestClient(options);
@@ -201,7 +200,6 @@ namespace Audkenning.Controllers
         {
             var options = new RestClientOptions(_basePath)
             {
-                MaxTimeout = -1,
                 FollowRedirects = false
             };
             var client = new RestClient(options);
@@ -237,7 +235,7 @@ namespace Audkenning.Controllers
                     if (jsonResponse["successUrl"] != null && jsonResponse["tokenId"] != null)
                     {
                         var successString = JsonConvert.SerializeObject(jsonResponse);
-                        string tokenId = jsonResponse["tokenId"].ToString();
+                        string tokenId = jsonResponse["tokenId"]!.ToString();
                         
                         _logger.LogWarning($"User {userIdentifier} authenticated successfully.");
                         
@@ -251,6 +249,7 @@ namespace Audkenning.Controllers
                 catch (Exception ex)
                 {
                     await _dbHelper.AddAuthenticationAsync(userIdentifier, false);
+                    _logger.LogError($"Error when polling user {userIdentifier}\n", ex.ToString()); // Log
                     return Unauthorized();
                 }
             }
@@ -260,7 +259,6 @@ namespace Audkenning.Controllers
             return BadRequest();
         }
 
-        // Step 4 - TODO: Figure out if we need step 4, or if Step 3 is sufficient.
         /// <summary>
         /// 
         /// </summary>
@@ -283,7 +281,7 @@ namespace Audkenning.Controllers
             {
                 RestResponse response = await client.ExecuteAsync(request);
 
-                var locationHeader = response.Headers.FirstOrDefault(h => h.Name == "Location");
+                var locationHeader = response.Headers?.FirstOrDefault(h => h.Name == "Location");
                 if (locationHeader != null)
                 {
                     _logger.LogInformation($"Location: {locationHeader.Value}");
@@ -291,7 +289,7 @@ namespace Audkenning.Controllers
 
                     Uri uri = new Uri(url);
                     var queryParams = HttpUtility.ParseQueryString(uri.Query);
-                    string code = queryParams["code"];
+                    string code = queryParams["code"]!;
                     _logger.LogInformation(code);
                     return await GetAccessAndIdToken(code, tokenId);
                 }
@@ -315,7 +313,6 @@ namespace Audkenning.Controllers
             return Ok();
         }
 
-        // Step 5 - Same as Step 4, do we need this?
         private async Task<IActionResult> GetAccessAndIdToken(string location, string tokenId)
         {
             _logger.LogWarning("Núna í skrefi 5");
@@ -333,13 +330,13 @@ namespace Audkenning.Controllers
 
             var response = await client.PostAsync(request);
 
-            var jsonResponse = JObject.Parse(response.Content);
+            var jsonResponse = JObject.Parse(response.Content!);
             var bearerToken = jsonResponse["access_token"];
             var idToken = jsonResponse["id_token"];
 
             if (bearerToken != null && idToken != null & tokenId != null)
             {
-                return await GetUserInfo(bearerToken.ToString(), idToken.ToString(), tokenId);
+                return await GetUserInfo(bearerToken.ToString(), idToken!.ToString(), tokenId!);
                 
             }
 
@@ -356,7 +353,7 @@ namespace Audkenning.Controllers
             request.AddHeader("Cookie", $"audssossolb=03; audsso={tokenId}");
 
             var response = await client.PostAsync(request);
-            var jsonResponse = JObject.Parse(response.Content);
+            var jsonResponse = JObject.Parse(response.Content!);
             var name = jsonResponse["name"]!;
 
             await _dbHelper.AddAuthenticationAsync(name.ToString(), true);
