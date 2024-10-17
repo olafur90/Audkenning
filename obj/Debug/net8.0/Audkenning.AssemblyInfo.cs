@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Audkenning")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f34a8d4bd5f943f238044834b3eb87a9023a94c2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0a221b7d280ce20e3f902846e715e374e5b27dba")]
 [assembly: System.Reflection.AssemblyProductAttribute("Audkenning")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Audkenning")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
