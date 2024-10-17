@@ -1,3 +1,10 @@
+////----------------------------------------------------------------------------////
+////
+////                        Reiknistofa Bankanna - Auðkenning
+////                               HomeController.cs
+////
+////----------------------------------------------------------------------------////
+
 using Audkenning.Models;
 using Microsoft.AspNetCore.Mvc;
 using RestSharp;
@@ -6,6 +13,10 @@ using System.Diagnostics;
 using Audkenning.Dtos;
 using Newtonsoft.Json.Linq;
 using Audkenning.Utils;
+using System.Web;
+using Azure.Core;
+using Azure;
+using Microsoft.EntityFrameworkCore;
 
 namespace Audkenning.Controllers
 {
@@ -15,7 +26,7 @@ namespace Audkenning.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly AudkenniDbContext _context;
+        //private readonly AudkenniDbContext _context;
 
         private readonly string _basePath;
         private readonly string _clientId;
@@ -27,6 +38,9 @@ namespace Audkenning.Controllers
         private readonly string _generatedRandomString;
         private readonly string _hashValue;
         private readonly string _authenticationChoice;
+        private readonly AudkenniDbContext _context;
+        private readonly DbHelper _dbHelper;
+        private string nameToReturn;
 
         // Fake data for testing - TODO: Remove after testing is done
         private static List<string> _recentAuthentications = new List<string>() { "1505902649", "0802932839", "0312232530", "3110192790" };
@@ -36,10 +50,11 @@ namespace Audkenning.Controllers
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="_context"></param>
-        public HomeController(ILogger<HomeController> logger, AudkenniDbContext _context)
+        public HomeController(ILogger<HomeController> logger, AudkenniDbContext context, DbHelper dbHelper)
         {
-            this._context = _context;
             this._logger = logger;
+            this._context = context;
+            this._dbHelper = dbHelper;
 
             _generatedRandomString = HashUtil.GenerateRandomString(15);
 
@@ -78,20 +93,16 @@ namespace Audkenning.Controllers
             }
         }
 
-        // TODO: Replace with actual database logic if we're going with that
-        // Fetch recent tries to authenticate from mock database
         [HttpGet]
-        public string GetRecentAuthentications()
+        public async Task<List<Authentication>> GetRecentAuthentications()
         {
-            if (_recentAuthentications.Count > 0) return JsonConvert.SerializeObject(_recentAuthentications);
-            return "";
+            return await _dbHelper.GetRecentAuthenticationsAsync();
         }
 
         private RestClient restClient()
         {
             var options = new RestClientOptions(_basePath)
             {
-                MaxTimeout = -1,
                 FollowRedirects = false
             };
             var client = new RestClient(options);
@@ -137,7 +148,6 @@ namespace Audkenning.Controllers
         {
             var options = new RestClientOptions(_basePath)
             {
-                MaxTimeout = -1,
                 FollowRedirects = false
             };
             var client = new RestClient(options);
@@ -180,7 +190,7 @@ namespace Audkenning.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error when calling Auðkenni with user identifier {userId}\n", ex.ToString());
+                _logger.LogError($"Error when calling Auðkenni with user id {userId}\n", ex.ToString());
                 return BadRequest();
             }
         }
@@ -196,7 +206,6 @@ namespace Audkenning.Controllers
         {
             var options = new RestClientOptions(_basePath)
             {
-                MaxTimeout = -1,
                 FollowRedirects = false
             };
             var client = new RestClient(options);
@@ -227,24 +236,16 @@ namespace Audkenning.Controllers
                     if (content == null) return NoContent();
 
                     var jsonResponse = JObject.Parse(content);
-                    _logger.LogInformation(jsonResponse.ToString()); // Log inform
 
                     // Check for 'successUrl' and 'tokenId' - These should be present if success
                     if (jsonResponse["successUrl"] != null && jsonResponse["tokenId"] != null)
                     {
                         var successString = JsonConvert.SerializeObject(jsonResponse);
-                        
-                        string tokenId = jsonResponse["tokenId"].ToString();
+                        string tokenId = jsonResponse["tokenId"]!.ToString();
                         
                         _logger.LogWarning($"User {userId} authenticated successfully.");
                         
-                        // TODO: See if we want to go to step 4, remove next line if not needed
-                        await GetAuthenticationCode(tokenId);
-
-                        // Add a new record of a successful authentication to the database
-                        AddAuthRecordToDatabase(userId, true);
-
-                        return Ok();
+                        return await GetAuthenticationCode(tokenId);
                     }
 
                     // Periodically check if user has confirmed on their end.
@@ -256,19 +257,21 @@ namespace Audkenning.Controllers
                     _logger.LogWarning($"User {userId} cancelled.\n {ex}");
 
                     // Add new record of a failed authentication to the database
-                    AddAuthRecordToDatabase(userId, false);
+                    await AddAuthRecordToDatabase(userId, false);
                     return Unauthorized();
                 }
             }
 
-            // Add new record of a failed authentication to the database - If we get to this code, it failed because of timeout
-            AddAuthRecordToDatabase(userId, false);
             _logger.LogError("Poll timed out while waiting for user.");
-
+            await _dbHelper.AddAuthenticationAsync(userId, false);
             return BadRequest();
         }
 
-        // Step 4 - TODO: Figure out if we need step 4, or if Step 3 is sufficient.
+        private async Task AddAuthRecordToDatabase(string userId, bool authenticated)
+        {
+            await this._dbHelper.AddAuthenticationAsync(userId, authenticated);
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -278,23 +281,39 @@ namespace Audkenning.Controllers
         {
             var options = new RestClientOptions(_basePath)
             {
-                MaxTimeout = -1,
-                FollowRedirects = true
+                FollowRedirects = false
             };
             var client = new RestClient(options);
-            var request = new RestRequest(":443/sso/oauth2/realms/root/realms/audkenni/authorize?service=api_v202&client_id=rbApiTest&response_type=code&scope=openid profile signature&code_challenge=5WnuXW4ALVNtX9G6MydkrPs-F2suz0TQkoaKBsk8Hzk&code_challenge_method=S256&state=abc123&redirect_uri=http://localhost:3000/callback", Method.Get);
+            var request = new RestRequest(
+                "/sso/oauth2/realms/root/realms/audkenni/authorize?service=api_v202&client_id=rbApiTest&response_type=code&scope=openid profile signature&code_challenge=5WnuXW4ALVNtX9G6MydkrPs-F2suz0TQkoaKBsk8Hzk&code_challenge_method=S256&state=abc123&redirect_uri=http://localhost:3000/callback"
+                , Method.Get
+            );
+            request.AddHeader("Cookie", $"audsso={tokenId}; audssossolb=03");
 
             try
             {
                 RestResponse response = await client.ExecuteAsync(request);
 
-                if (response.Content != null)
+                var locationHeader = response.Headers?.FirstOrDefault(h => h.Name == "Location");
+                if (locationHeader != null)
                 {
-                    //var x = await GetAccessAndIdToken(location);
+                    _logger.LogInformation($"Location: {locationHeader.Value}");
+                    string url = locationHeader.Value;
+
+                    Uri uri = new Uri(url);
+                    var queryParams = HttpUtility.ParseQueryString(uri.Query);
+                    string code = queryParams["code"]!;
+                    _logger.LogInformation(code);
+                    return await GetAccessAndIdToken(code, tokenId);
                 }
                 else
                 {
-                    return NoContent();
+                    _logger.LogInformation("Location header not found.");
+                }
+
+                if (response.Content != null)
+                {
+                    Console.WriteLine("Here!");
                 }
             }
             catch (Exception ex)
@@ -305,35 +324,53 @@ namespace Audkenning.Controllers
             return Ok();
         }
 
-        // Step 5 - Same as Step 4, do we need this?
-        private async Task<IActionResult> GetAccessAndIdToken(string location)
+        private async Task<IActionResult> GetAccessAndIdToken(string location, string tokenId)
         {
+            _logger.LogWarning("Núna í skrefi 5");
             var client = new RestClient(_basePath);
             var request = new RestRequest("/sso/oauth2/realms/root/realms/audkenni/access_token");
 
             request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
-            request.AddHeader("Cookie", "audsso=UgT8UelNnFKc-Wm0GvQzDpwu0Ag.*AAJTSQACMDIAAlNLABwxQ1M5QVVlTFFxaXVCZWFTMkxXajhHV2JMWTg9AAR0eXBlAANDVFMAAlMxAAIwMw..*; audssossolb=03");
+            request.AddHeader("Cookie", $"audsso={tokenId}; audssossolb=03");
             request.AddParameter("grant_type", "authorization_code");
             request.AddParameter("client_id", _clientId);
             request.AddParameter("redirect_uri", "http://localhost:3000/callback");
             request.AddParameter("code_verifier", "nO1rQDGH1QXNTTCMBb5rUFqwasA1LOEMBxJN9dtxWFDD0AFVPqMVDOoPyIrkLqPe7YGn2Q45o7ZG20L7zIJaOe8v8L51wy178ayQSk2zcNrT1ZjI2Kn3LxH2GGIbPqUK");
-            request.AddParameter("code", "764sXFIB2i9t5nJsY4zpIUbV51I");
+            request.AddParameter("code", location);
             request.AddParameter("client_secret", "eNJi1oo0wxA1");
 
             var response = await client.PostAsync(request);
 
-            return Ok();
+            var jsonResponse = JObject.Parse(response.Content!);
+            var bearerToken = jsonResponse["access_token"];
+            var idToken = jsonResponse["id_token"];
+
+            if (bearerToken != null && idToken != null & tokenId != null)
+            {
+                return await GetUserInfo(bearerToken.ToString(), idToken!.ToString(), tokenId!);
+                
+            }
+
+            return BadRequest("Error in step 5");
         }
 
-        private async void AddAuthRecordToDatabase(string userIdentifier, bool success)
+        // Step 6 - Get user info
+        private async Task<IActionResult> GetUserInfo(string bearerToken, string accessToken, string tokenId)
         {
-            var authFailed = new Authentications
-            {
-                Name = userIdentifier,
-                IsAuthenticated = success
-            };
-            _context.Authentication.Add(authFailed);
-            await _context.SaveChangesAsync();
+            var client = new RestClient(_basePath);
+            var request = new RestRequest("/sso/oauth2/realms/root/realms/audkenni/userinfo");
+            request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
+            request.AddHeader("Authorization", $"Bearer {bearerToken}");
+            request.AddHeader("Cookie", $"audssossolb=03; audsso={tokenId}");
+
+            var response = await client.PostAsync(request);
+            var jsonResponse = JObject.Parse(response.Content!);
+            var name = jsonResponse["name"]!;
+
+            await _dbHelper.AddAuthenticationAsync(name.ToString(), true);
+
+            _logger.LogCritical($"\nVelkomin/n {name}");
+            return Ok(name.ToString());
         }
 
         public IActionResult Index()

@@ -1,4 +1,5 @@
 using Audkenning;
+using Audkenning.Utils;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,11 +13,13 @@ builder.Services.AddCors();
 
 // Register IConfiguration so it can be injected
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
-
 builder.Services.AddDbContext<AudkenniDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+// Register DatabaseHelper for DI
+builder.Services.AddScoped<DbHelper>();
 
 var app = builder.Build();
 
