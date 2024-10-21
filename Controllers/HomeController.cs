@@ -12,12 +12,8 @@ using Newtonsoft.Json;
 using System.Diagnostics;
 using Audkenning.Dtos;
 using Newtonsoft.Json.Linq;
-using Microsoft.Extensions.Options;
 using Audkenning.Utils;
 using System.Web;
-using Azure.Core;
-using Azure;
-using Microsoft.EntityFrameworkCore;
 
 namespace Audkenning.Controllers
 {
@@ -27,7 +23,6 @@ namespace Audkenning.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        //private readonly AudkenniDbContext _context;
 
         private readonly string _basePath;
         private readonly string _clientId;
@@ -39,21 +34,16 @@ namespace Audkenning.Controllers
         private readonly string _generatedRandomString;
         private readonly string _hashValue;
         private readonly string _authenticationChoice;
-        private readonly AudkenniDbContext _context;
         private readonly DbHelper _dbHelper;
         private string nameToReturn;
-
-        // Fake data for testing - TODO: Remove after testing is done
-        private static List<string> _recentAuthentications = new List<string>() { "1505902649", "0802932839", "0312232530", "3110192790" };
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="logger"></param>
-        public HomeController(ILogger<HomeController> logger, DbHelper dbHelper, AudkenniDbContext context, CancellationToken cancellationToken = default)
+        public HomeController(ILogger<HomeController> logger, DbHelper dbHelper, CancellationToken cancellationToken = default)
         {
             this._logger = logger;
-            this._context = context;
             this._dbHelper = dbHelper;
 
             _generatedRandomString = HashUtil.GenerateRandomString(15);
